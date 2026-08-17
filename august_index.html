@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>August Incentive — Leaderboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,900&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#111312;
+    --panel:rgba(255,255,255,0.03);
+    --panel-b:rgba(255,255,255,0.08);
+    --mint:#3EDDB0;
+    --mint-glow:#5DEBC2;
+    --mint-soft:#B8F0DE;
+    --violet:#5B7FD9;
+    --up:#3EDDB0;
+    --gold:#FFD700;
+    --silver:#C7D0E8;
+    --bronze:#FF9D5C;
+    --white:#F5F7FA;
+    --muted:#8B96A5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html, body {
+    min-width:1920px; min-height:1080px;
+    overflow-x:auto; overflow-y:auto;
+    background:var(--bg); color:var(--white);
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before {
+    content:''; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(62,221,176,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(62,221,176,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 55% 45% at 85% 10%, rgba(0,229,255,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 15% 90%, rgba(123,97,255,0.16) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,215,0,0.06) 0%, transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .screen {
+    width:1920px; height:1080px;
+    padding:32px 40px 28px;
+    display:grid;
+    grid-template-columns: 470px 1fr;
+    gap:24px;
+    position:relative;
+    z-index:1;
+  }
+
+  .panel {
+    background:var(--panel);
+    border:1px solid var(--panel-b);
+    border-radius:16px;
+    padding:20px 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .panel::before{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.015) 0 1px, transparent 1px 3px);
+    pointer-events:none;
+  }
+
+  /* LEFT COL */
+  .col-left { display:flex; flex-direction:column; gap:20px; }
+
+  .brand .eye {
+    font-family:'Space Mono';font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;font-weight:700;
+  }
+  .brand .t {
+    font-family:'Barlow Condensed';font-style:italic;font-weight:900;line-height:.9;text-transform:uppercase;margin-top:8px;
+  }
+  .brand .t .l1{font-size:72px;color:#fff;display:block}
+  .brand .t .l2{font-size:72px;color:var(--mint);display:block;margin-top:-4px}
+  .brand .sub {
+    font-family:'Space Mono';font-size:12px;color:var(--white);margin-top:12px;letter-spacing:.05em;line-height:1.5;
+  }
+  .brand .sub b{color:var(--up)}
+
+  /* Scoring */
+  .points-panel{background:linear-gradient(180deg, rgba(62,221,176,.1), rgba(62,221,176,.02));border-color:rgba(62,221,176,.4)}
+  .points-panel .plabel{font-family:'Space Mono';font-size:11px;letter-spacing:.3em;color:var(--mint);text-transform:uppercase;margin-bottom:12px;font-weight:700}
+  .rulerow{
+    display:grid;grid-template-columns:60px 1fr 50px;gap:10px;align-items:center;
+    padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .rulerow:last-child{border-bottom:none}
+  .rulerow .rn {
+    font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:24px;color:var(--up);text-align:center;line-height:1;
+  }
+  .rulerow .rl {
+    font-family:'Barlow Condensed';font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.3px;
+  }
+  .rulerow .rd {
+    font-family:'Space Mono';font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3;
+  }
+
+  .example-panel{
+    background:linear-gradient(180deg, rgba(255,215,0,.08), rgba(255,215,0,.01));
+    border-color:rgba(255,215,0,.3);
+  }
+  .example-panel .et{font-family:'Barlow Condensed';font-weight:900;font-style:italic;font-size:18px;color:var(--gold);text-transform:uppercase;letter-spacing:.4px}
+  .example-panel p{font-family:'Space Mono';font-size:12px;color:var(--white);line-height:1.6;margin-top:8px}
+  .example-panel p b{color:var(--gold)}
+
+  /* Pool card */
+  .pool-panel{
+    background:linear-gradient(180deg, rgba(255,215,0,.14), rgba(255,215,0,.02));
+    border-color:rgba(255,215,0,.42);
+  }
+  .pool-panel .ptitle{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:22px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+  .pool-panel .ptotal{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:66px;color:var(--gold);line-height:.95;margin:4px 0 10px}
+  .pool-panel .pcell{
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:10px 12px;margin-bottom:7px;
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .pool-panel .pcell.first{border-color:rgba(255,215,0,.5);background:rgba(255,215,0,.08)}
+  .pool-panel .pcell.exp{border-color:rgba(91,127,217,.5);background:rgba(91,127,217,.12)}
+  .pool-panel .pcell .pk{font-family:'Barlow Condensed';font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.3px}
+  .pool-panel .pcell .pval{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:26px;color:var(--gold);line-height:1}
+  .pool-panel .pcell.silver .pval{color:var(--silver)}
+  .pool-panel .pcell.exp .pval{color:var(--violet)}
+
+  /* Clock */
+  .clock-panel{background:linear-gradient(180deg, rgba(0,204,122,.1), rgba(0,204,122,.02));border-color:rgba(0,204,122,.4)}
+  .clock-panel .clbl{font-family:'Space Mono';font-size:11px;letter-spacing:.3em;color:var(--up);text-transform:uppercase;font-weight:700}
+  .clock-panel .cdisplay{display:flex;justify-content:space-around;margin-top:10px}
+  .clock-panel .cslot{text-align:center}
+  .clock-panel .cnum{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:52px;color:var(--up);line-height:1}
+  .clock-panel .cunit{font-family:'Space Mono';font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+  .clock-panel .csep{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:52px;color:var(--muted);line-height:1}
+
+  /* RIGHT COL - STACKED BOARDS */
+  .col-right{display:flex;flex-direction:column;gap:20px;height:100%}
+
+  .board-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .board-title{
+    font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:44px;text-transform:uppercase;letter-spacing:-.5px;line-height:1;
+  }
+  .board-newbiz .board-title{color:var(--mint)}
+  .board-expansion .board-title{color:var(--violet)}
+  .board-sub{font-family:'Space Mono';font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+  .status-chip{
+    font-family:'Space Mono';font-size:10px;letter-spacing:.2em;padding:5px 12px;border-radius:14px;
+    background:rgba(0,204,122,.15);border:1px solid rgba(0,204,122,.45);color:var(--up);
+  }
+  .status-chip.syncing{background:rgba(255,215,0,.12);border-color:rgba(255,215,0,.4);color:var(--gold)}
+
+  .board-cols{
+    display:grid;padding:8px 12px;
+    font-family:'Space Mono';font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .board-newbiz .board-cols{grid-template-columns:44px 1fr 90px 110px 90px 90px}
+  .board-expansion .board-cols{grid-template-columns:44px 1fr 1fr}
+
+  .brow{
+    display:grid;align-items:center;
+    padding:12px 12px;border-radius:10px;margin-top:6px;
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+    transition:background .3s ease;
+  }
+  .board-newbiz .brow{grid-template-columns:44px 1fr 90px 110px 90px 90px}
+  .board-expansion .brow{grid-template-columns:44px 1fr 1fr}
+  .brow.p1{border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.06)}
+  .brow.p2{border-color:rgba(199,208,232,.35);background:rgba(199,208,232,.04)}
+  .brow.p3{border-color:rgba(255,157,92,.35);background:rgba(255,157,92,.04)}
+  .brow .bpos{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:26px;color:var(--muted);text-align:center;line-height:1}
+  .brow.p1 .bpos{color:var(--gold)}
+  .brow.p2 .bpos{color:var(--silver)}
+  .brow.p3 .bpos{color:var(--bronze)}
+  .brow .bname{font-family:'Barlow Condensed';font-weight:700;font-size:22px;text-transform:uppercase;letter-spacing:.3px;line-height:1}
+  .brow .bmini{font-family:'Space Mono';font-size:11px;color:var(--muted);text-align:right;letter-spacing:.05em}
+  .brow .bmini.up{color:var(--up)}
+  .brow .bpts{font-family:'Space Mono';font-weight:700;font-size:22px;color:var(--white);text-align:right}
+  .board-expansion .brow .bpts{color:var(--violet)}
+
+  .board-newbiz{border-color:rgba(62,221,176,.35);flex:1.7}
+  .board-expansion{border-color:rgba(91,127,217,.4);flex:1}
+
+  .feed-panel{
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);
+    border-radius:10px;padding:10px 14px;
+  }
+  .feed-title{font-family:'Space Mono';font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+  .feed-line{font-family:'Space Mono';font-size:11px;color:var(--white);padding:2px 0}
+  .feed-line.pending{color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- ============ LEFT COLUMN ============ -->
+  <div class="col-left">
+
+    <!-- Brand -->
+    <div class="panel brand">
+      <div class="eye">NexHealth SMB Dental // August 2026</div>
+      <div class="t"><span class="l1">August</span><span class="l2">Incentive.</span></div>
+      <div class="sub"><b>$2,000</b> total pool · Two teams, two races · Aug 17 – Aug 30</div>
+    </div>
+
+    <!-- New-Biz Point System -->
+    <div class="panel points-panel">
+      <div class="plabel">New-Biz Scoring</div>
+      <div class="rulerow">
+        <div class="rn">+1</div>
+        <div><div class="rl">New Logo</div><div class="rd">Any new customer closed</div></div>
+      </div>
+      <div class="rulerow">
+        <div class="rn">+3</div>
+        <div><div class="rl">New Logo + Payments</div><div class="rd">Payments product attached</div></div>
+      </div>
+      <div class="rulerow">
+        <div class="rn">+2</div>
+        <div><div class="rl">Per $100K GPV</div><div class="rd">Full $100K increments only, rounded down</div></div>
+      </div>
+    </div>
+
+    <!-- Example -->
+    <div class="panel example-panel">
+      <div class="et">🎯 Example</div>
+      <p>New Logo + Payments at <b>$250K GPV</b><br>
+      = 3 (logo+payments) + 4 (2 × $100K)<br>
+      = <b>7 points</b></p>
+    </div>
+
+    <!-- Prize Pool -->
+    <div class="panel pool-panel">
+      <div class="ptitle">💰 Prize Pool — $2,000</div>
+      <div class="ptotal">$2,000</div>
+      <div class="pcell first"><div class="pk">1st · New-Biz</div><div class="pval">$1,000</div></div>
+      <div class="pcell silver"><div class="pk">2nd · New-Biz</div><div class="pval">$500</div></div>
+      <div class="pcell exp"><div class="pk">Most MRR · Expansion</div><div class="pval">$500</div></div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="panel clock-panel">
+      <div class="clbl">⏱ Ends In</div>
+      <div class="cdisplay">
+        <div class="cslot"><div class="cnum" id="d-days">--</div><div class="cunit">Days</div></div>
+        <div class="csep">:</div>
+        <div class="cslot"><div class="cnum" id="d-hrs">--</div><div class="cunit">Hrs</div></div>
+        <div class="csep">:</div>
+        <div class="cslot"><div class="cnum" id="d-min">--</div><div class="cunit">Min</div></div>
+        <div class="csep">:</div>
+        <div class="cslot"><div class="cnum" id="d-sec">--</div><div class="cunit">Sec</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ RIGHT COLUMN ============ -->
+  <div class="col-right">
+
+    <!-- NEW-BIZ BOARD -->
+    <div class="panel board-newbiz">
+      <div class="board-head">
+        <div>
+          <div class="board-title">New-Biz · Points Race</div>
+          <div class="board-sub">6 reps · $1,000 to 1st · $500 to 2nd</div>
+        </div>
+        <div class="status-chip syncing" id="sync-status-nb">🟡 Syncing</div>
+      </div>
+
+      <div class="board-cols">
+        <div>Pos</div>
+        <div>Rep</div>
+        <div style="text-align:right">Logos</div>
+        <div style="text-align:right">+ Payments</div>
+        <div style="text-align:right">GPV</div>
+        <div style="text-align:right">Pts</div>
+      </div>
+
+      <div id="newbiz-list">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- EXPANSION BOARD -->
+    <div class="panel board-expansion">
+      <div class="board-head">
+        <div>
+          <div class="board-title">Expansion · MRR Race</div>
+          <div class="board-sub">3 reps · $500 to most blended MRR</div>
+        </div>
+        <div class="status-chip syncing" id="sync-status-exp">🟡 Syncing</div>
+      </div>
+
+      <div class="board-cols">
+        <div>Pos</div>
+        <div>Rep</div>
+        <div style="text-align:right">Blended MRR</div>
+      </div>
+
+      <div id="expansion-list">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="feed-panel">
+      <div class="feed-title">⚡ Live Feed</div>
+      <div class="feed-line pending" id="live-feed">Connecting to scores...</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // ====================================================================
+  // CONFIG
+  // ====================================================================
+  const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTYHSPYiUZLQb7d-yJB_157fHQ05ISDexmEI5q2EntsKkswmzEafRarRpAnVW1UBsgbHFVcP4Sxh3OF/pub?output=csv';
+  const COMP_END = new Date('2026-08-30T23:59:59');
+  const REFRESH_MS = 30000;
+
+  const NEWBIZ_REPS = new Set([
+    'jake dahle','christian nelson','colby kemp',
+    'mitch nazer','ryan hall','andrew hoffer'
+  ]);
+  const EXPANSION_REPS = new Set([
+    'arianna stetson','rachel littleton','dustin darrah'
+  ]);
+
+  // ====================================================================
+  // COUNTDOWN
+  // ====================================================================
+  function updateCountdown(){
+    const now = new Date();
+    let diff = Math.max(0, COMP_END - now);
+    const days = Math.floor(diff / 86400000); diff -= days*86400000;
+    const hrs  = Math.floor(diff / 3600000);  diff -= hrs*3600000;
+    const min  = Math.floor(diff / 60000);    diff -= min*60000;
+    const sec  = Math.floor(diff / 1000);
+    document.getElementById('d-days').textContent = String(days).padStart(2,'0');
+    document.getElementById('d-hrs').textContent  = String(hrs).padStart(2,'0');
+    document.getElementById('d-min').textContent  = String(min).padStart(2,'0');
+    document.getElementById('d-sec').textContent  = String(sec).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ====================================================================
+  // CSV PARSE
+  // ====================================================================
+  function parseCSV(text){
+    const rows = [];
+    let cur = '', row = [], inQ = false;
+    for (let i=0; i<text.length; i++){
+      const c = text[i];
+      if (c === '"'){ inQ = !inQ; continue; }
+      if (c === ',' && !inQ){ row.push(cur); cur=''; continue; }
+      if ((c === '\n' || c === '\r') && !inQ){
+        if (cur !== '' || row.length){ row.push(cur); rows.push(row); }
+        cur=''; row=[];
+        if (c === '\r' && text[i+1] === '\n') i++;
+        continue;
+      }
+      cur += c;
+    }
+    if (cur !== '' || row.length){ row.push(cur); rows.push(row); }
+    return rows;
+  }
+  function num(s){
+    if (s == null) return 0;
+    const n = Number(String(s).replace(/[^\d.-]/g,''));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmtMRR(n){
+    if (n >= 1000) return '$' + (n/1000).toFixed(1) + 'K';
+    return '$' + Math.round(n);
+  }
+
+  // ====================================================================
+  // RENDER
+  // ====================================================================
+  function renderNewBiz(reps){
+    const list = document.getElementById('newbiz-list');
+    list.innerHTML = '';
+    reps.sort((a,b) => b.points - a.points);
+    reps.forEach((r, i) => {
+      const pos = i + 1;
+      const rankClass = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
+      const row = document.createElement('div');
+      row.className = `brow ${rankClass}`;
+      row.innerHTML = `
+        <div class="bpos">${pos}</div>
+        <div><div class="bname">${r.name}</div></div>
+        <div class="bmini">${r.logos || 0}</div>
+        <div class="bmini up">${r.payments || 0}</div>
+        <div class="bmini">$${(r.gpv/1000).toFixed(0)}K</div>
+        <div class="bpts">${r.points}</div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  function renderExpansion(reps){
+    const list = document.getElementById('expansion-list');
+    list.innerHTML = '';
+    reps.sort((a,b) => b.mrr - a.mrr);
+    reps.forEach((r, i) => {
+      const pos = i + 1;
+      const rankClass = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
+      const row = document.createElement('div');
+      row.className = `brow ${rankClass}`;
+      row.innerHTML = `
+        <div class="bpos">${pos}</div>
+        <div><div class="bname">${r.name}</div></div>
+        <div class="bpts">${fmtMRR(r.mrr)}</div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  async function fetchScores(){
+    if (!SHEET_CSV_URL){
+      document.getElementById('sync-status-nb').innerHTML = '🔴 No sheet URL';
+      document.getElementById('sync-status-exp').innerHTML = '🔴 No sheet URL';
+      document.getElementById('live-feed').textContent = 'Paste your Google Sheet CSV URL into SHEET_CSV_URL to connect scoring.';
+      // Render placeholder rows so board still looks populated
+      renderNewBiz([...NEWBIZ_REPS].map(n => ({name: n.replace(/\b\w/g, l=>l.toUpperCase()), logos:0, payments:0, gpv:0, points:0})));
+      renderExpansion([...EXPANSION_REPS].map(n => ({name: n.replace(/\b\w/g, l=>l.toUpperCase()), mrr:0})));
+      return;
+    }
+    try {
+      document.getElementById('sync-status-nb').innerHTML = '🟡 Syncing';
+      document.getElementById('sync-status-exp').innerHTML = '🟡 Syncing';
+      const joinChar = SHEET_CSV_URL.includes('?') ? '&' : '?';
+      const res = await fetch(SHEET_CSV_URL + joinChar + 'cachebust=' + Date.now());
+      const text = await res.text();
+      const rows = parseCSV(text);
+      if (rows.length < 2) throw new Error('Empty sheet');
+
+      const header = rows[0].map(h => h.trim().toLowerCase());
+      const nameIdx = header.findIndex(h => h.includes('rep') || h.includes('name'));
+      const teamIdx = header.findIndex(h => h.includes('team'));
+      const logosIdx = header.findIndex(h => h.includes('logo') && !h.includes('payment'));
+      const paymentsIdx = header.findIndex(h => h.includes('payment'));
+      const gpvIdx = header.findIndex(h => h.includes('gpv'));
+      const pointsIdx = header.findIndex(h => h.includes('point') || h === 'pts');
+      const mrrIdx = header.findIndex(h => h.includes('mrr') || h.includes('blended'));
+
+      const newbiz = [];
+      const expansion = [];
+
+      for (let i=1; i<rows.length; i++){
+        const r = rows[i];
+        if (!r || nameIdx < 0 || !r[nameIdx]) continue;
+        const name = r[nameIdx].trim();
+        if (!name) continue;
+        const key = name.toLowerCase();
+        // Determine team: explicit team column, or by roster membership
+        const teamVal = teamIdx >= 0 ? r[teamIdx].trim().toLowerCase() : '';
+        const isNewBiz = teamVal.includes('new') || teamVal === 'new-biz' || teamVal === 'newbiz' || (teamVal === '' && NEWBIZ_REPS.has(key));
+        const isExp = teamVal.includes('exp') || (teamVal === '' && EXPANSION_REPS.has(key));
+
+        if (isNewBiz){
+          newbiz.push({
+            name,
+            logos: num(r[logosIdx]),
+            payments: num(r[paymentsIdx]),
+            gpv: num(r[gpvIdx]),
+            points: pointsIdx >= 0 ? num(r[pointsIdx]) : (num(r[logosIdx])*1 + num(r[paymentsIdx])*3 + Math.floor(num(r[gpvIdx])/100000)*2),
+          });
+        } else if (isExp){
+          expansion.push({
+            name,
+            mrr: num(r[mrrIdx]),
+          });
+        }
+      }
+
+      // Backfill missing reps as zero so board always shows all reps
+      const seenNB = new Set(newbiz.map(r => r.name.toLowerCase()));
+      NEWBIZ_REPS.forEach(k => {
+        if (!seenNB.has(k)){
+          const display = k.split(' ').map(w => w[0].toUpperCase()+w.slice(1)).join(' ');
+          newbiz.push({name: display, logos:0, payments:0, gpv:0, points:0});
+        }
+      });
+      const seenEx = new Set(expansion.map(r => r.name.toLowerCase()));
+      EXPANSION_REPS.forEach(k => {
+        if (!seenEx.has(k)){
+          const display = k.split(' ').map(w => w[0].toUpperCase()+w.slice(1)).join(' ');
+          expansion.push({name: display, mrr:0});
+        }
+      });
+
+      renderNewBiz(newbiz);
+      renderExpansion(expansion);
+      document.getElementById('sync-status-nb').innerHTML = '🟢 Live';
+      document.getElementById('sync-status-nb').className = 'status-chip';
+      document.getElementById('sync-status-exp').innerHTML = '🟢 Live';
+      document.getElementById('sync-status-exp').className = 'status-chip';
+      document.getElementById('live-feed').textContent = `Updated ${new Date().toLocaleTimeString()} · ${newbiz.length} New-Biz · ${expansion.length} Expansion`;
+      document.getElementById('live-feed').classList.remove('pending');
+    } catch (e){
+      document.getElementById('sync-status-nb').innerHTML = '🔴 Error';
+      document.getElementById('sync-status-exp').innerHTML = '🔴 Error';
+      document.getElementById('live-feed').textContent = 'Failed to load sheet · ' + e.message;
+    }
+  }
+
+  fetchScores();
+  setInterval(fetchScores, REFRESH_MS);
+</script>
+
+</body>
+</html>
