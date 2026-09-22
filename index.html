@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///Users/parker/Downloads/new_hire_sprint_index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>New Hire Class Pipeline Build Sprint — Leaderboard</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+  :root{
+    --bg:#111312;
+    --panel:rgba(255,255,255,0.03);
+    --panel-b:rgba(255,255,255,0.08);
+    --mint:#3EDDB0;
+    --mint-glow:#5DEBC2;
+    --mint-soft:#B8F0DE;
+    --violet:#5B7FD9;
+    --up:#3EDDB0;
+    --gold:#FFD700;
+    --silver:#C7D0E8;
+    --bronze:#FF9D5C;
+    --white:#F5F7FA;
+    --muted:#8B96A5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html, body {
+    min-width:1920px; min-height:1080px;
+    overflow-x:auto; overflow-y:auto;
+    background:var(--bg); color:var(--white);
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before {
+    content:''; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(62,221,176,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(62,221,176,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 55% 45% at 85% 10%, rgba(62,221,176,0.16) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 15% 90%, rgba(91,127,217,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,215,0,0.06) 0%, transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .screen {
+    width:1920px; height:1080px;
+    padding:32px 40px 28px;
+    display:grid;
+    grid-template-columns: 470px 1fr;
+    gap:24px;
+    position:relative;
+    z-index:1;
+  }
+
+  .panel {
+    background:var(--panel);
+    border:1px solid var(--panel-b);
+    border-radius:16px;
+    padding:20px 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .panel::before{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.015) 0 1px, transparent 1px 3px);
+    pointer-events:none;
+  }
+
+  /* LEFT COL */
+  .col-left { display:flex; flex-direction:column; gap:20px; }
+
+  .brand .eye {
+    font-family:'Space Mono';font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;font-weight:700;
+  }
+  .brand .t {
+    font-family:'Barlow Condensed';font-style:italic;font-weight:900;line-height:.9;text-transform:uppercase;margin-top:8px;
+  }
+  .brand .t .l1{font-size:42px;color:#fff;display:block}
+  .brand .t .l2{font-size:62px;color:var(--mint);display:block;margin-top:-2px}
+  .brand .sub {
+    font-family:'Space Mono';font-size:12px;color:var(--white);margin-top:12px;letter-spacing:.05em;line-height:1.5;
+  }
+  .brand .sub b{color:var(--up)}
+
+  /* Prize panels */
+  .prize-panel{background:linear-gradient(180deg, rgba(255,215,0,.12), rgba(255,215,0,.02));border-color:rgba(255,215,0,.4)}
+  .prize-panel .plabel{font-family:'Space Mono';font-size:11px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:700}
+  .prow{
+    display:grid;grid-template-columns:1fr 90px;gap:10px;align-items:center;
+    padding:12px 14px;margin-bottom:8px;border-radius:9px;
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  }
+  .prow:last-child{margin-bottom:0}
+  .prow.convo{border-color:rgba(62,221,176,.35);background:rgba(62,221,176,.06)}
+  .prow.sets{border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.08)}
+  .prow.perform{border-color:rgba(91,127,217,.35);background:rgba(91,127,217,.06)}
+  .prow .pname{font-family:'Barlow Condensed';font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.3px;line-height:1.1}
+  .prow .pgate{font-family:'Space Mono';font-size:9.5px;color:var(--muted);margin-top:3px;letter-spacing:.05em}
+  .prow .pv{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:28px;text-align:right;line-height:1}
+  .prow.convo .pv{color:var(--mint)}
+  .prow.sets .pv{color:var(--gold)}
+  .prow.perform .pv{color:var(--violet)}
+
+  /* Rules panel */
+  .rules-panel{background:linear-gradient(180deg, rgba(62,221,176,.06), rgba(62,221,176,.01));border-color:rgba(62,221,176,.28)}
+  .rules-panel .rt{font-family:'Barlow Condensed';font-weight:900;font-style:italic;font-size:18px;color:var(--mint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+  .rules-panel ul{list-style:none;margin:0;padding:0}
+  .rules-panel li{font-family:'Space Mono';font-size:11px;color:var(--white);line-height:1.5;padding:4px 0;padding-left:14px;position:relative}
+  .rules-panel li::before{content:"▸";color:var(--mint);position:absolute;left:0}
+  .rules-panel li b{color:var(--gold)}
+
+  /* Clock */
+  .clock-panel{background:linear-gradient(180deg, rgba(62,221,176,.08), rgba(62,221,176,.01));border-color:rgba(62,221,176,.3)}
+  .clock-panel .clbl{font-family:'Space Mono';font-size:11px;letter-spacing:.3em;color:var(--mint);text-transform:uppercase;font-weight:700}
+  .clock-panel .cdisplay{display:flex;justify-content:space-around;margin-top:10px}
+  .clock-panel .cslot{text-align:center}
+  .clock-panel .cnum{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:52px;color:var(--mint);line-height:1}
+  .clock-panel .cunit{font-family:'Space Mono';font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+  .clock-panel .csep{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:52px;color:var(--muted);line-height:1}
+
+  /* RIGHT COL */
+  .col-right{display:flex;flex-direction:column;gap:20px;height:100%}
+
+  .board-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .board-title{
+    font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:44px;text-transform:uppercase;letter-spacing:-.5px;line-height:1;color:var(--mint);
+  }
+  .board-sub{font-family:'Space Mono';font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+  .status-chip{
+    font-family:'Space Mono';font-size:10px;letter-spacing:.2em;padding:5px 12px;border-radius:14px;
+    background:rgba(62,221,176,.15);border:1px solid rgba(62,221,176,.4);color:var(--mint);
+  }
+  .status-chip.syncing{background:rgba(255,215,0,.12);border-color:rgba(255,215,0,.4);color:var(--gold)}
+
+  .board-cols{
+    display:grid;grid-template-columns:44px 1fr 100px 100px 100px 110px;gap:10px;
+    padding:10px 12px;
+    font-family:'Space Mono';font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .board-cols .rlbl{text-align:right}
+
+  .brow{
+    display:grid;grid-template-columns:44px 1fr 100px 100px 100px 110px;gap:10px;align-items:center;
+    padding:14px 12px;border-radius:10px;margin-top:8px;
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+    transition:background .3s ease;
+  }
+  .brow.p1{border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.06)}
+  .brow.p2{border-color:rgba(199,208,232,.35);background:rgba(199,208,232,.04)}
+  .brow.p3{border-color:rgba(255,157,92,.35);background:rgba(255,157,92,.04)}
+  .brow .bpos{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:28px;color:var(--muted);text-align:center;line-height:1}
+  .brow.p1 .bpos{color:var(--gold)}
+  .brow.p2 .bpos{color:var(--silver)}
+  .brow.p3 .bpos{color:var(--bronze)}
+  .brow .bname{font-family:'Barlow Condensed';font-weight:700;font-size:24px;text-transform:uppercase;letter-spacing:.3px;line-height:1}
+  .brow .bstat{font-family:'Space Mono';font-weight:700;font-size:22px;text-align:right}
+  .brow .bstat.convos{color:var(--mint)}
+  .brow .bstat.sets{color:var(--gold)}
+  .brow .bstat.perfs{color:var(--violet)}
+  .brow .bearn{font-family:'Barlow Condensed';font-style:italic;font-weight:900;font-size:24px;color:var(--up);text-align:right;line-height:1}
+  .brow .bearn small{font-family:'Space Mono';font-size:10px;color:var(--muted);font-weight:400;font-style:normal;display:block;margin-top:2px;letter-spacing:.05em}
+
+  /* Gate progress */
+  .gates{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .gate{
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+    border-radius:10px;padding:12px 14px;
+  }
+  .gate.hit{border-color:rgba(62,221,176,.5);background:rgba(62,221,176,.08)}
+  .gate.miss{border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.05)}
+  .gate .glbl{font-family:'Space Mono';font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;font-weight:700}
+  .gate .gval{font-family:'Barlow Condensed';font-weight:900;font-style:italic;font-size:22px;text-transform:uppercase;letter-spacing:.3px;margin-top:4px;line-height:1.1}
+  .gate.hit .gval{color:var(--mint)}
+  .gate.miss .gval{color:var(--gold)}
+  .gate .gdet{font-family:'Space Mono';font-size:11px;color:var(--white);margin-top:4px;letter-spacing:.03em}
+
+  .feed-panel{
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);
+    border-radius:10px;padding:10px 14px;margin-top:14px;
+  }
+  .feed-title{font-family:'Space Mono';font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+  .feed-line{font-family:'Space Mono';font-size:11px;color:var(--white);padding:2px 0}
+  .feed-line.pending{color:var(--muted);font-style:italic}
+</style>
+</head>
+<body style="overscroll-behavior-x: auto;">
+
+<div class="screen">
+
+  <!-- ============ LEFT COLUMN ============ -->
+  <div class="col-left">
+
+    <!-- Brand -->
+    <div class="panel brand">
+      <div class="eye">NexHealth SMB Dental // Sep 2026</div>
+      <div class="t"><span class="l1">New Hire Class</span><span class="l2">Pipeline Sprint.</span></div>
+      <div class="sub"><b>Mon Sep 21 – Fri Sep 25</b> · 5 new hires · Fill the funnel</div>
+    </div>
+
+    <!-- Prizes -->
+    <div class="panel prize-panel">
+      <div class="plabel">Prizes</div>
+      <div class="prow convo">
+        <div>
+          <div class="pname">Most Convos</div>
+          <div class="pgate">Gate: 15+ (3/day avg)</div>
+        </div>
+        <div class="pv">$150</div>
+      </div>
+      <div class="prow sets">
+        <div>
+          <div class="pname">Most Sets</div>
+          <div class="pgate">Gate: 5+ sets</div>
+        </div>
+        <div class="pv">$300</div>
+      </div>
+      <div class="prow perform">
+        <div>
+          <div class="pname">Every Perform</div>
+          <div class="pgate">Uncapped · stack them</div>
+        </div>
+        <div class="pv">$25</div>
+      </div>
+    </div>
+
+    <!-- Rules -->
+    <div class="panel rules-panel">
+      <div class="rt">⚡ How It Works</div>
+      <ul>
+        <li>Convos &amp; Sets are <b>winner-take-all</b> at week end</li>
+        <li>If nobody hits the gate, that prize <b>doesn't award</b></li>
+        <li>Performs pay <b>every one</b>, no ceiling</li>
+        <li>Winners announced <b>Mon 9/28</b></li>
+      </ul>
+    </div>
+
+    <!-- Countdown -->
+    <div class="panel clock-panel">
+      <div class="clbl">⏱ Sprint Ends In</div>
+      <div class="cdisplay">
+        <div class="cslot"><div class="cnum" id="d-days">03</div><div class="cunit">Days</div></div>
+        <div class="csep">:</div>
+        <div class="cslot"><div class="cnum" id="d-hrs">12</div><div class="cunit">Hrs</div></div>
+        <div class="csep">:</div>
+        <div class="cslot"><div class="cnum" id="d-min">23</div><div class="cunit">Min</div></div>
+        <div class="csep">:</div>
+        <div class="cslot"><div class="cnum" id="d-sec">06</div><div class="cunit">Sec</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ RIGHT COLUMN ============ -->
+  <div class="col-right">
+
+    <div class="panel" style="flex:1;display:flex;flex-direction:column">
+      <div class="board-head">
+        <div>
+          <div class="board-title">Leaderboard</div>
+          <div class="board-sub">5 new hires · sorted by earnings</div>
+        </div>
+        <div class="status-chip syncing" id="sync-status">🔴 Error</div>
+      </div>
+
+      <div class="board-cols">
+        <div>Pos</div>
+        <div>Rep</div>
+        <div class="rlbl">Convos</div>
+        <div class="rlbl">Sets</div>
+        <div class="rlbl">Performs</div>
+        <div class="rlbl">Earning</div>
+      </div>
+
+      <div id="board-list"><div class="brow p1">
+        <div class="bpos">1</div>
+        <div><div class="bname">Ryker Flint</div></div>
+        <div class="bstat convos">0</div>
+        <div class="bstat sets">0</div>
+        <div class="bstat perfs">0</div>
+        <div class="bearn">$0<small>tracking</small></div>
+      </div><div class="brow p2">
+        <div class="bpos">2</div>
+        <div><div class="bname">Natalia Guzman</div></div>
+        <div class="bstat convos">0</div>
+        <div class="bstat sets">0</div>
+        <div class="bstat perfs">0</div>
+        <div class="bearn">$0<small>tracking</small></div>
+      </div><div class="brow p3">
+        <div class="bpos">3</div>
+        <div><div class="bname">Lucas Quintero</div></div>
+        <div class="bstat convos">0</div>
+        <div class="bstat sets">0</div>
+        <div class="bstat perfs">0</div>
+        <div class="bearn">$0<small>tracking</small></div>
+      </div><div class="brow ">
+        <div class="bpos">4</div>
+        <div><div class="bname">Bonni Erizo</div></div>
+        <div class="bstat convos">0</div>
+        <div class="bstat sets">0</div>
+        <div class="bstat perfs">0</div>
+        <div class="bearn">$0<small>tracking</small></div>
+      </div><div class="brow ">
+        <div class="bpos">5</div>
+        <div><div class="bname">Kelly Geisser</div></div>
+        <div class="bstat convos">0</div>
+        <div class="bstat sets">0</div>
+        <div class="bstat perfs">0</div>
+        <div class="bearn">$0<small>tracking</small></div>
+      </div></div>
+
+      <!-- Gate status -->
+      <div class="gates">
+        <div class="gate miss" id="gate-convos">
+          <div class="glbl">Convo Gate (15+)</div>
+          <div class="gval" id="gate-convos-status">NEED 15 MORE</div>
+          <div class="gdet" id="gate-convos-detail">Highest: 0 / 15 needed</div>
+        </div>
+        <div class="gate miss" id="gate-sets">
+          <div class="glbl">Sets Gate (5+)</div>
+          <div class="gval" id="gate-sets-status">NEED 5 MORE</div>
+          <div class="gdet" id="gate-sets-detail">Highest: 0 / 5 needed</div>
+        </div>
+      </div>
+
+      <div class="feed-panel">
+        <div class="feed-title">⚡ Live Feed</div>
+        <div class="feed-line pending" id="live-feed">Failed to load sheet · Failed to fetch</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // ====================================================================
+  // CONFIG — paste your Google Sheet CSV URL between the quotes below
+  // Expected sheet columns: Rep, Convos, Sets, Performs
+  // ====================================================================
+  const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTYHSPYiUZLQb7d-yJB_157fHQ05ISDexmEI5q2EntsKkswmzEafRarRpAnVW1UBsgbHFVcP4Sxh3OF/pub?output=csv';
+  const COMP_END = new Date('2026-09-25T23:59:59');
+  const REFRESH_MS = 30000;
+  const PERFORM_PAYOUT = 25;
+  const CONVO_GATE = 15;
+  const SETS_GATE = 5;
+
+  const HIRE_REPS = [
+    'Ryker Flint',
+    'Natalia Guzman',
+    'Lucas Quintero',
+    'Bonni Erizo',
+    'Kelly Geisser',
+  ];
+
+  // ====================================================================
+  // COUNTDOWN
+  // ====================================================================
+  function updateCountdown(){
+    const now = new Date();
+    let diff = Math.max(0, COMP_END - now);
+    const days = Math.floor(diff / 86400000); diff -= days*86400000;
+    const hrs  = Math.floor(diff / 3600000);  diff -= hrs*3600000;
+    const min  = Math.floor(diff / 60000);    diff -= min*60000;
+    const sec  = Math.floor(diff / 1000);
+    document.getElementById('d-days').textContent = String(days).padStart(2,'0');
+    document.getElementById('d-hrs').textContent  = String(hrs).padStart(2,'0');
+    document.getElementById('d-min').textContent  = String(min).padStart(2,'0');
+    document.getElementById('d-sec').textContent  = String(sec).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ====================================================================
+  // CSV PARSE
+  // ====================================================================
+  function parseCSV(text){
+    const rows = [];
+    let cur = '', row = [], inQ = false;
+    for (let i=0; i<text.length; i++){
+      const c = text[i];
+      if (c === '"'){ inQ = !inQ; continue; }
+      if (c === ',' && !inQ){ row.push(cur); cur=''; continue; }
+      if ((c === '\n' || c === '\r') && !inQ){
+        if (cur !== '' || row.length){ row.push(cur); rows.push(row); }
+        cur=''; row=[];
+        if (c === '\r' && text[i+1] === '\n') i++;
+        continue;
+      }
+      cur += c;
+    }
+    if (cur !== '' || row.length){ row.push(cur); rows.push(row); }
+    return rows;
+  }
+  function num(s){
+    if (s == null) return 0;
+    const n = Number(String(s).replace(/[^\d.-]/g,''));
+    return isNaN(n) ? 0 : n;
+  }
+
+  // ====================================================================
+  // RENDER
+  // ====================================================================
+  function renderBoard(reps){
+    const list = document.getElementById('board-list');
+    list.innerHTML = '';
+    // Sort by earnings, tie-break by performs
+    reps.sort((a,b) => (b.earnings - a.earnings) || (b.performs - a.performs));
+    reps.forEach((r, i) => {
+      const pos = i + 1;
+      const rankClass = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
+      const row = document.createElement('div');
+      row.className = `brow ${rankClass}`;
+      row.innerHTML = `
+        <div class="bpos">${pos}</div>
+        <div><div class="bname">${r.name}</div></div>
+        <div class="bstat convos">${r.convos}</div>
+        <div class="bstat sets">${r.sets}</div>
+        <div class="bstat perfs">${r.performs}</div>
+        <div class="bearn">$${r.earnings}<small>tracking</small></div>
+      `;
+      list.appendChild(row);
+    });
+
+    // Gates
+    const maxConvos = reps.reduce((m,r) => Math.max(m, r.convos), 0);
+    const maxSets = reps.reduce((m,r) => Math.max(m, r.sets), 0);
+    const gcEl = document.getElementById('gate-convos');
+    const gcStatus = document.getElementById('gate-convos-status');
+    const gcDetail = document.getElementById('gate-convos-detail');
+    if (maxConvos >= CONVO_GATE){
+      gcEl.classList.add('hit'); gcEl.classList.remove('miss');
+      gcStatus.textContent = '✓ HIT · $150 WILL AWARD';
+      gcDetail.textContent = `Highest: ${maxConvos} convos`;
+    } else {
+      gcEl.classList.add('miss'); gcEl.classList.remove('hit');
+      gcStatus.textContent = `NEED ${CONVO_GATE - maxConvos} MORE`;
+      gcDetail.textContent = `Highest: ${maxConvos} / ${CONVO_GATE} needed`;
+    }
+    const gsEl = document.getElementById('gate-sets');
+    const gsStatus = document.getElementById('gate-sets-status');
+    const gsDetail = document.getElementById('gate-sets-detail');
+    if (maxSets >= SETS_GATE){
+      gsEl.classList.add('hit'); gsEl.classList.remove('miss');
+      gsStatus.textContent = '✓ HIT · $300 WILL AWARD';
+      gsDetail.textContent = `Highest: ${maxSets} sets`;
+    } else {
+      gsEl.classList.add('miss'); gsEl.classList.remove('hit');
+      gsStatus.textContent = `NEED ${SETS_GATE - maxSets} MORE`;
+      gsDetail.textContent = `Highest: ${maxSets} / ${SETS_GATE} needed`;
+    }
+  }
+
+  function placeholderReps(){
+    return HIRE_REPS.map(n => ({name:n, convos:0, sets:0, performs:0, earnings:0}));
+  }
+
+  async function fetchScores(){
+    if (!SHEET_CSV_URL){
+      document.getElementById('sync-status').innerHTML = '🔴 No sheet URL';
+      document.getElementById('sync-status').className = 'status-chip syncing';
+      document.getElementById('live-feed').textContent = 'Paste your Google Sheet CSV URL into SHEET_CSV_URL to connect scoring.';
+      renderBoard(placeholderReps());
+      return;
+    }
+    try {
+      document.getElementById('sync-status').innerHTML = '🟡 Syncing';
+      document.getElementById('sync-status').className = 'status-chip syncing';
+      const joinChar = SHEET_CSV_URL.includes('?') ? '&' : '?';
+      const res = await fetch(SHEET_CSV_URL + joinChar + 'cachebust=' + Date.now());
+      const text = await res.text();
+      const rows = parseCSV(text);
+      if (rows.length < 2) throw new Error('Empty sheet');
+
+      const header = rows[0].map(h => h.trim().toLowerCase());
+      const nameIdx = header.findIndex(h => h.includes('rep') || h.includes('name'));
+      const convoIdx = header.findIndex(h => h.includes('convo') || h.includes('conversation'));
+      const setsIdx = header.findIndex(h => h === 'sets' || h.includes('set'));
+      const perfIdx = header.findIndex(h => h.includes('perf') || h.includes('demo'));
+
+      const seen = new Set();
+      const reps = [];
+      for (let i=1; i<rows.length; i++){
+        const r = rows[i];
+        if (!r || nameIdx < 0 || !r[nameIdx]) continue;
+        const name = r[nameIdx].trim();
+        if (!name) continue;
+        const convos = num(r[convoIdx]);
+        const sets = num(r[setsIdx]);
+        const performs = num(r[perfIdx]);
+        const earnings = performs * PERFORM_PAYOUT;
+        reps.push({ name, convos, sets, performs, earnings });
+        seen.add(name.toLowerCase());
+      }
+      // Backfill any missing hires
+      HIRE_REPS.forEach(n => {
+        if (!seen.has(n.toLowerCase())){
+          reps.push({name:n, convos:0, sets:0, performs:0, earnings:0});
+        }
+      });
+
+      renderBoard(reps);
+      document.getElementById('sync-status').innerHTML = '🟢 Live';
+      document.getElementById('sync-status').className = 'status-chip';
+      document.getElementById('live-feed').textContent = `Updated ${new Date().toLocaleTimeString()} · ${reps.length} reps tracked`;
+      document.getElementById('live-feed').classList.remove('pending');
+    } catch (e){
+      document.getElementById('sync-status').innerHTML = '🔴 Error';
+      document.getElementById('sync-status').className = 'status-chip syncing';
+      document.getElementById('live-feed').textContent = 'Failed to load sheet · ' + e.message;
+      renderBoard(placeholderReps());
+    }
+  }
+
+  fetchScores();
+  setInterval(fetchScores, REFRESH_MS);
+</script>
+
+
+
+</body></html>
